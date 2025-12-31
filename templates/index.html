@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chatbot</title>
+
+    <!-- ✅ Flask-safe static loading -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>AI Chatbot</h2>
+
+<div id="chat-box"></div>
+
+<input type="text" id="user-input" placeholder="Type a message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+function sendMessage() {
+    let msg = document.getElementById("user-input").value;
+
+    if (msg.trim() === "") return;
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ message: msg })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("chat-box").innerHTML +=
+            "<p><b>You:</b> " + msg + "</p>" +
+            "<p><b>Bot:</b> " + data.reply + "</p>";
+
+        document.getElementById("chat-box").scrollTop =
+            document.getElementById("chat-box").scrollHeight;
+    });
+
+    document.getElementById("user-input").value = "";
+}
+</script>
+
+</body>
+</html>
